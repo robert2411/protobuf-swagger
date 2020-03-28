@@ -42,7 +42,8 @@ public class ProtobufObjectMapper {
         return jsonToObject(protoToJson(protobuf), clazz);
     }
 
-    public <T extends Message> T jsonToProto(String json, Supplier<T.Builder> protobufBuilder) throws JsonProcessingException, InvalidProtocolBufferException {
+    @SuppressWarnings("unchecked")
+    public <T extends Message> T jsonToProto(String json, Supplier<T.Builder> protobufBuilder) throws InvalidProtocolBufferException {
         T.Builder builder = protobufBuilder.get();
         parser.merge(json, builder);
         return (T) builder.build();

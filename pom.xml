@@ -12,10 +12,12 @@
         <protobuf-java.version>3.9.2</protobuf-java.version>
         <jackson-databind.version>2.10.3</jackson-databind.version>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <junit.version>4.12</junit.version>
         <json-unit-spring.version>2.16.2</json-unit-spring.version>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
