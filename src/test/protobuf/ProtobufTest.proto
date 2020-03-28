@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+option java_package = "com.robert2411.protobuf.swagger.mapper";
+
+message Greeting {
+    string greeting = 1;
+    repeated string test = 2;
+}
