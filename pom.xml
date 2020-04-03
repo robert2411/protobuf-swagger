@@ -6,7 +6,7 @@
 
     <groupId>com.github.robert2411</groupId>
     <artifactId>protobuf-swagger-mapper</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <properties>
         <protobuf-java.version>3.9.2</protobuf-java.version>
