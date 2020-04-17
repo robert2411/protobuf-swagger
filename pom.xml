@@ -18,7 +18,17 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
     </properties>
+
+
+    <scm>
+        <connection>scm:git:git://github.com/robert2411/protobuf-object-mapper.git</connection>
+        <developerConnection>scm:git:git@github.com:robert2411/protobuf-object-mapper.git</developerConnection>
+        <url>https://github.com/robert2411/protobuf-object-mapper</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -50,10 +60,44 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <configuration>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>GitHub OWNER Apache Maven Packages</name>
+            <name>GitHub robert2411 Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/robert2411/protobuf-object-mapper</url>
         </repository>
     </distributionManagement>
