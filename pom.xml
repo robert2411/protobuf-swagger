@@ -35,11 +35,11 @@
     </developers>
 
     <properties>
-        <protobuf-java.version>3.11.4</protobuf-java.version>
-        <jackson-databind.version>2.10.5.1</jackson-databind.version>
+        <protobuf-java.version>3.14.0</protobuf-java.version>
+        <jackson-databind.version>2.12.0</jackson-databind.version>
 
         <junit.version>4.13.1</junit.version>
-        <json-unit-spring.version>2.16.2</json-unit-spring.version>
+        <json-unit-spring.version>2.22.0</json-unit-spring.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
