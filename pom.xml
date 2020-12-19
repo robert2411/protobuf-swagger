@@ -12,7 +12,7 @@
         <protobuf-java.version>3.11.4</protobuf-java.version>
         <jackson-databind.version>2.10.3</jackson-databind.version>
 
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <json-unit-spring.version>2.16.2</json-unit-spring.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
