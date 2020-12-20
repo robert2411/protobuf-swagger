@@ -3,12 +3,14 @@ package com.robert2411.protobuf.swagger.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.jayway.jsonpath.TypeRef;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
@@ -63,7 +65,7 @@ public class ProtobufObjectMapperTest {
     }
 
     @Test
-    public void JsonToProtoTest() throws InvalidProtocolBufferException, JsonProcessingException {
+    public void jsonToProtoTest() throws InvalidProtocolBufferException, JsonProcessingException {
         ProtobufTest.Greeting proto = mapper.jsonToProto(JSON, ProtobufTest.Greeting::newBuilder);
 
         Assert.assertEquals("hello", proto.getGreeting());
@@ -72,12 +74,36 @@ public class ProtobufObjectMapperTest {
     }
 
     @Test
-    public void JsonToObjectTest() throws IOException {
+    public void jsonToObjectTest() throws IOException {
         TestObject object = mapper.jsonToObject(JSON, TestObject.class);
 
         Assert.assertEquals("hello", object.getGreeting());
         Assert.assertEquals(1, object.getTest().size());
         Assert.assertEquals("world", object.getTest().get(0));
+    }
+
+    @Test
+    public void readFieldFromJson() throws IOException {
+        List<String> object = mapper.readFieldFromJson(JSON, "$.test.[*]", new TypeRef<List<String>>() {});
+
+        Assert.assertEquals(1, object.size());
+        Assert.assertEquals("world", object.get(0));
+    }
+
+    @Test
+    public void writeValueToJson() throws IOException {
+        String json = mapper.putValueInJson(JSON, "$", "testkey", Collections.singletonList("bla"));
+
+        assertThatJson(json)
+                .isEqualTo(json("{\"greeting\":\"hello\",\"test\":[\"world\"],\"testkey\":[\"bla\"]}"));
+    }
+
+    @Test
+    public void readAndPut() throws IOException {
+        String json = mapper.readAndPut(JSON, "$.test", "{}", "$", "testkey", i -> i);
+
+        assertThatJson(json)
+                .isEqualTo(json("{\"testkey\":[\"world\"]}"));
     }
 
     @Test

@@ -1,12 +1,18 @@
 package com.robert2411.protobuf.swagger.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.TypeRef;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -15,6 +21,7 @@ public class ProtobufObjectMapper {
     private final ObjectMapper objectMapper;
     private final JsonFormat.Parser parser;
     private final JsonFormat.Printer printer;
+    private final Configuration configuration;
 
     public ProtobufObjectMapper() {
         this(new ObjectMapper().disable(FAIL_ON_EMPTY_BEANS));
@@ -29,9 +36,14 @@ public class ProtobufObjectMapper {
     }
 
     public ProtobufObjectMapper(ObjectMapper objectMapper, JsonFormat.Parser parser, JsonFormat.Printer printer) {
+        this(objectMapper, parser, printer, Configuration.defaultConfiguration());
+    }
+
+    public ProtobufObjectMapper(ObjectMapper objectMapper, JsonFormat.Parser parser, JsonFormat.Printer printer, Configuration configuration) {
         this.objectMapper = objectMapper;
         this.parser = parser;
         this.printer = printer;
+        this.configuration = configuration;
     }
 
     public <T extends Message> T map(Object swagger, Supplier<T.Builder> protobufBuilder) throws JsonProcessingException, InvalidProtocolBufferException {
@@ -49,6 +61,27 @@ public class ProtobufObjectMapper {
         return (T) builder.build();
     }
 
+    //https://github.com/json-path/JsonPath
+    public <T> T readFieldFromJson(String json, String jsonPath, TypeRef<T> typeRef){
+       return JsonPath
+               .using(configuration)
+               .parse(json)
+               .read(jsonPath);
+    }
+
+    public <T> String putValueInJson(String json, String jsonPath, String key, T value){
+        return JsonPath
+                .using(configuration)
+                .parse(json)
+                .put(JsonPath.compile(jsonPath), key, value)
+                .jsonString();
+    }
+
+    public <T, P> String readAndPut(String fromJson, String fromJsonPath, String toJson, String toJsonPath, String key, Function<T, P> mapper) {
+        T value = (T) readFieldFromJson(fromJson, fromJsonPath, new TypeRef<Object>() {
+        });
+        return putValueInJson(toJson, toJsonPath, key, mapper.apply(value));
+    }
     public String objectToJson(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
     }
