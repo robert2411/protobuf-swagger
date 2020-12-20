@@ -1,12 +1,17 @@
 package com.robert2411.protobuf.swagger.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.TypeRef;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -49,6 +54,19 @@ public class ProtobufObjectMapper {
         return (T) builder.build();
     }
 
+    public <T> T readFieldFromJson(String json, String jsonPath, TypeRef<T> typeRef){
+       return JsonPath.read(json, jsonPath);
+    }
+
+    public <T> String putValueInJson(String json, String jsonPath, String key, T value){
+        return JsonPath.parse(json).put(JsonPath.compile(jsonPath), key, value).jsonString();
+    }
+
+    public <T, P> String readAndPut(String fromJson, String fromJsonPath, String toJson, String toJsonPath, String key, Function<T, P> mapper) {
+        T value = (T) readFieldFromJson(fromJson, fromJsonPath, new TypeRef<Object>() {
+        });
+        return putValueInJson(toJson, toJsonPath, key, mapper.apply(value));
+    }
     public String objectToJson(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
     }
