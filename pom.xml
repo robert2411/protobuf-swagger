@@ -52,7 +52,7 @@
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 
-        <pitest-maven.version>1.6.1</pitest-maven.version>
+        <pitest-maven.version>1.6.2</pitest-maven.version>
         <json-path.version>2.5.0</json-path.version>
     </properties>
 
