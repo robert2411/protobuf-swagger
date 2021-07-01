@@ -3,14 +3,12 @@ package com.robert2411.protobuf.swagger.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.jayway.jsonpath.TypeRef;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
@@ -38,6 +36,20 @@ public class ProtobufObjectMapperTest {
     }
 
     @Test
+    public void objectToObject() throws IOException {
+        TestObject testObject = new TestObject();
+        testObject.setGreeting("Hello world");
+        testObject.setTest(new ArrayList<>());
+        testObject.getTest().add("hello");
+        testObject.getTest().add("world");
+        TestObject out = mapper.map(testObject, TestObject.class);
+
+        Assert.assertEquals("Hello world", out.getGreeting());
+        Assert.assertEquals("hello", out.getTest().get(0));
+        Assert.assertEquals("world", out.getTest().get(1));
+    }
+
+    @Test
     public void protoToObject() throws IOException {
         ProtobufTest.Greeting greeting = ProtobufTest.Greeting.newBuilder()
                 .setGreeting("Hello world")
@@ -49,6 +61,20 @@ public class ProtobufObjectMapperTest {
         Assert.assertEquals("Hello world", out.getGreeting());
         Assert.assertEquals("hello", out.getTest().get(0));
         Assert.assertEquals("world", out.getTest().get(1));
+    }
+
+    @Test
+    public void protoToProtobuf() throws IOException {
+        ProtobufTest.Greeting greeting = ProtobufTest.Greeting.newBuilder()
+                .setGreeting("Hello world")
+                .addTest("hello")
+                .addTest("world")
+                .build();
+        ProtobufTest.Greeting out = mapper.map(greeting, ProtobufTest.Greeting::newBuilder);
+
+        Assert.assertEquals("Hello world", out.getGreeting());
+        Assert.assertEquals("hello", out.getTest(0));
+        Assert.assertEquals("world", out.getTest(1));
     }
 
     @Test
