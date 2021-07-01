@@ -1,18 +1,14 @@
 package com.robert2411.protobuf.swagger.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.TypeRef;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.function.Function;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -21,7 +17,6 @@ public class ProtobufObjectMapper {
     private final ObjectMapper objectMapper;
     private final JsonFormat.Parser parser;
     private final JsonFormat.Printer printer;
-    private final Configuration configuration;
 
     public ProtobufObjectMapper() {
         this(new ObjectMapper().disable(FAIL_ON_EMPTY_BEANS));
@@ -36,23 +31,59 @@ public class ProtobufObjectMapper {
     }
 
     public ProtobufObjectMapper(ObjectMapper objectMapper, JsonFormat.Parser parser, JsonFormat.Printer printer) {
-        this(objectMapper, parser, printer, Configuration.defaultConfiguration());
-    }
-
-    public ProtobufObjectMapper(ObjectMapper objectMapper, JsonFormat.Parser parser, JsonFormat.Printer printer, Configuration configuration) {
         this.objectMapper = objectMapper;
         this.parser = parser;
         this.printer = printer;
-        this.configuration = configuration;
+    }
+
+    public <T> T map(Object swagger, Class<T> clazz) throws IOException {
+        return map(swagger, clazz, Collections.emptyList());
+    }
+
+    public <T> T map(Object swagger, Class<T> clazz, List<MappingCustomizer> mappingCustomizers) throws IOException {
+        String json = objectToJson(swagger);
+        json = applyCustomizers(json, mappingCustomizers);
+        return jsonToObject(json, clazz);
     }
 
     public <T extends Message> T map(Object swagger, Supplier<T.Builder> protobufBuilder) throws JsonProcessingException, InvalidProtocolBufferException {
-        return jsonToProto(objectToJson(swagger), protobufBuilder);
+        return map(swagger, protobufBuilder, Collections.emptyList());
+    }
+
+    public <T extends Message> T map(Object swagger, Supplier<T.Builder> protobufBuilder, List<MappingCustomizer> mappingCustomizers) throws JsonProcessingException, InvalidProtocolBufferException {
+        String json = objectToJson(swagger);
+        json = applyCustomizers(json, mappingCustomizers);
+        return jsonToProto(json, protobufBuilder);
+    }
+
+    public <P extends Message, T extends Message> T map(P protobuf, Supplier<T.Builder> protobufBuilder) throws IOException {
+        return map(protobuf, protobufBuilder, Collections.emptyList());
+    }
+
+    public <P extends Message, T extends Message> T map(P protobuf, Supplier<T.Builder> protobufBuilder, List<MappingCustomizer> mappingCustomizers) throws IOException {
+        String json = protoToJson(protobuf);
+        json = applyCustomizers(json, mappingCustomizers);
+        return jsonToProto(json, protobufBuilder);
     }
 
     public <P extends Message, T> T map(P protobuf, Class<T> clazz) throws IOException {
-        return jsonToObject(protoToJson(protobuf), clazz);
+        return map(protobuf, clazz, Collections.emptyList());
     }
+
+    public <P extends Message, T> T map(P protobuf, Class<T> clazz, List<MappingCustomizer> mappingCustomizers) throws IOException {
+        String json = protoToJson(protobuf);
+        json = applyCustomizers(json, mappingCustomizers);
+        return jsonToObject(json, clazz);
+    }
+
+    public String applyCustomizers(String json, List<MappingCustomizer> mappingCustomizers) {
+        String tempJson = json;
+        for (MappingCustomizer customizer : mappingCustomizers) {
+            tempJson = customizer.apply(tempJson);
+        }
+        return tempJson;
+    }
+
 
     @SuppressWarnings("unchecked")
     public <T extends Message> T jsonToProto(String json, Supplier<T.Builder> protobufBuilder) throws InvalidProtocolBufferException {
@@ -61,27 +92,6 @@ public class ProtobufObjectMapper {
         return (T) builder.build();
     }
 
-    //https://github.com/json-path/JsonPath
-    public <T> T readFieldFromJson(String json, String jsonPath, TypeRef<T> typeRef){
-       return JsonPath
-               .using(configuration)
-               .parse(json)
-               .read(jsonPath);
-    }
-
-    public <T> String putValueInJson(String json, String jsonPath, String key, T value){
-        return JsonPath
-                .using(configuration)
-                .parse(json)
-                .put(JsonPath.compile(jsonPath), key, value)
-                .jsonString();
-    }
-
-    public <T, P> String readAndPut(String fromJson, String fromJsonPath, String toJson, String toJsonPath, String key, Function<T, P> mapper) {
-        T value = (T) readFieldFromJson(fromJson, fromJsonPath, new TypeRef<Object>() {
-        });
-        return putValueInJson(toJson, toJsonPath, key, mapper.apply(value));
-    }
     public String objectToJson(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
     }
