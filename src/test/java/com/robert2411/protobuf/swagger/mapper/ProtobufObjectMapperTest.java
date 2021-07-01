@@ -123,4 +123,16 @@ public class ProtobufObjectMapperTest {
         assertThatJson(json)
                 .isEqualTo(json(JSON));
     }
+
+    @Test
+    public void applyCustomizers() {
+        MappingCustomizer customizer = new MappingCustomizer() {
+            @Override
+            public String apply(String json) {
+                return "{}";
+            }
+        };
+
+        Assert.assertEquals("{}", mapper.applyCustomizers(JSON, Collections.singletonList(customizer)));
+    }
 }

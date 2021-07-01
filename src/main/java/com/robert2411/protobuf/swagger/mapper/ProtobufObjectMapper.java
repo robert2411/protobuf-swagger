@@ -76,7 +76,7 @@ public class ProtobufObjectMapper {
         return jsonToObject(json, clazz);
     }
 
-    private String applyCustomizers(String json, List<MappingCustomizer> mappingCustomizers) {
+    public String applyCustomizers(String json, List<MappingCustomizer> mappingCustomizers) {
         String tempJson = json;
         for (MappingCustomizer customizer : mappingCustomizers) {
             tempJson = customizer.apply(tempJson);
