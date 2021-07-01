@@ -82,29 +82,9 @@ public class ProtobufObjectMapperTest {
         Assert.assertEquals("world", object.getTest().get(0));
     }
 
-    @Test
-    public void readFieldFromJson() throws IOException {
-        List<String> object = mapper.readFieldFromJson(JSON, "$.test.[*]", new TypeRef<List<String>>() {});
 
-        Assert.assertEquals(1, object.size());
-        Assert.assertEquals("world", object.get(0));
-    }
 
-    @Test
-    public void writeValueToJson() throws IOException {
-        String json = mapper.putValueInJson(JSON, "$", "testkey", Collections.singletonList("bla"));
 
-        assertThatJson(json)
-                .isEqualTo(json("{\"greeting\":\"hello\",\"test\":[\"world\"],\"testkey\":[\"bla\"]}"));
-    }
-
-    @Test
-    public void readAndPut() throws IOException {
-        String json = mapper.readAndPut(JSON, "$.test", "{}", "$", "testkey", i -> i);
-
-        assertThatJson(json)
-                .isEqualTo(json("{\"testkey\":[\"world\"]}"));
-    }
 
     @Test
     public void objectToJsonTest() throws JsonProcessingException {
