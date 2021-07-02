@@ -1,8 +1,8 @@
-package com.robert2411.protobuf.swagger.mapper.customizers;
+package com.github.robert2411.protobuf.swagger.mapper.customizers;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
-import com.robert2411.protobuf.swagger.mapper.MappingCustomizer;
+import com.github.robert2411.protobuf.swagger.mapper.MappingCustomizer;
 
 import java.util.function.Function;
 

@@ -1,4 +1,4 @@
-package com.robert2411.protobuf.swagger.mapper;
+package com.github.robert2411.protobuf.swagger.mapper;
 
 import java.util.List;
 

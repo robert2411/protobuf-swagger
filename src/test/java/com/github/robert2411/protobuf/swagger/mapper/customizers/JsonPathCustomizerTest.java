@@ -1,6 +1,5 @@
-package com.robert2411.protobuf.swagger.mapper.customizers;
+package com.github.robert2411.protobuf.swagger.mapper.customizers;
 
-import com.robert2411.protobuf.swagger.mapper.customizers.JsonPathCustomizer;
 import org.junit.Assert;
 import org.junit.Test;
 

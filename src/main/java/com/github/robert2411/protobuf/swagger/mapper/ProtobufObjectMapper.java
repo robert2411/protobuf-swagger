@@ -1,4 +1,4 @@
-package com.robert2411.protobuf.swagger.mapper;
+package com.github.robert2411.protobuf.swagger.mapper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
-
-import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 
 public class ProtobufObjectMapper {
     private final ObjectMapper objectMapper;
@@ -35,7 +33,7 @@ public class ProtobufObjectMapper {
     }
 
     public ProtobufObjectMapper(ObjectMapper objectMapper, JsonFormat.Parser parser) {
-        this(objectMapper, parser, JsonFormat.printer());
+        this(objectMapper, parser, JsonFormat.printer().includingDefaultValueFields());
     }
 
     public ProtobufObjectMapper(ObjectMapper objectMapper, JsonFormat.Parser parser, JsonFormat.Printer printer) {
