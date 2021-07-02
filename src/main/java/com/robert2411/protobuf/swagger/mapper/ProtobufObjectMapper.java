@@ -1,7 +1,11 @@
 package com.robert2411.protobuf.swagger.mapper;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
@@ -19,7 +23,11 @@ public class ProtobufObjectMapper {
     private final JsonFormat.Printer printer;
 
     public ProtobufObjectMapper() {
-        this(new ObjectMapper().disable(FAIL_ON_EMPTY_BEANS));
+        this(new ObjectMapper().registerModule(new JavaTimeModule())
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false));
     }
 
     public ProtobufObjectMapper(ObjectMapper objectMapper) {
