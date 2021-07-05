@@ -1,5 +1,8 @@
 package com.github.robert2411.protobuf.swagger.mapper;
 
+/**
+ * This interface should be implemented if you want to generate modifiers for the json converters.
+ */
 @FunctionalInterface
 public interface MappingCustomizer {
 

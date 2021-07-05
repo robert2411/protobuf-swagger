@@ -15,6 +15,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * The core class of this project
+ * This class helps you to map between protobuf java objects and normal java objects
+ */
 public class ProtobufObjectMapper {
     private final ObjectMapper objectMapper;
     private final JsonFormat.Parser parser;
@@ -42,12 +46,27 @@ public class ProtobufObjectMapper {
         this.printer = printer;
     }
 
-    public <T> T map(Object swagger, Class<T> clazz) throws IOException {
-        return map(swagger, clazz, Collections.emptyList());
+    /**
+     * Map from one object to another
+     *
+     * @param object the original object
+     * @param clazz  the class to what it has to be mapped
+     * @return A mapped object
+     */
+    public <T> T map(Object object, Class<T> clazz) throws IOException {
+        return map(object, clazz, Collections.emptyList());
     }
 
-    public <T> T map(Object swagger, Class<T> clazz, List<MappingCustomizer> mappingCustomizers) throws IOException {
-        String json = objectToJson(swagger);
+    /**
+     * Map from one object to another
+     *
+     * @param object             the original object
+     * @param clazz              the class to what it has to be mapped
+     * @param mappingCustomizers customizers that should be applied on the mapping
+     * @return A mapped object
+     */
+    public <T> T map(Object object, Class<T> clazz, List<MappingCustomizer> mappingCustomizers) throws IOException {
+        String json = objectToJson(object);
         json = applyCustomizers(json, mappingCustomizers);
         return jsonToObject(json, clazz);
     }
