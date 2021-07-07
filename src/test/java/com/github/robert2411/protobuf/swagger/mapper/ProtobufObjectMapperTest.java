@@ -126,13 +126,23 @@ public class ProtobufObjectMapperTest {
 
     @Test
     public void applyCustomizers() {
-        MappingCustomizer customizer = new MappingCustomizer() {
-            @Override
-            public String apply(String json) {
-                return "{}";
-            }
-        };
+        MappingCustomizer customizer = json -> "{}";
 
         Assert.assertEquals("{}", mapper.applyCustomizers(JSON, Collections.singletonList(customizer)));
+    }
+
+    @Test
+    public void getObjectMapper(){
+        Assert.assertNotNull(mapper.getObjectMapper());
+    }
+
+    @Test
+    public void getPrinter(){
+        Assert.assertNotNull(mapper.getPrinter());
+    }
+
+    @Test
+    public void getParser(){
+        Assert.assertNotNull(mapper.getParser());
     }
 }

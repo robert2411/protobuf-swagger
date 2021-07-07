@@ -46,6 +46,18 @@ public class ProtobufObjectMapper {
         this.printer = printer;
     }
 
+    public ObjectMapper getObjectMapper(){
+        return this.objectMapper;
+    }
+
+    public JsonFormat.Parser getParser(){
+        return this.parser;
+    }
+
+    public JsonFormat.Printer getPrinter(){
+        return this.printer;
+    }
+
     /**
      * Map from one object to another
      *
