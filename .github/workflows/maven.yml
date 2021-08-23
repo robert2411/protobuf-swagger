@@ -21,7 +21,21 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: '8'
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+    - name: Build with Maven and sign
+      run: |
+        echo "on a tag -> set pom.xml <version> to ${GITHUB_REF##*/}"
+        mkdir -p ~/.gnupg/
+        printf "$GPG_SIGNING_KEY" | base64 --decode > ~/.gnupg/private.key
+        gpg --import ~/.gnupg/private.key
+        mvn -B org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=${GITHUB_REF##*/}
+        mvn -B -Psign package
     - name: mutationCovarage with Maven
       run: mvn -B org.pitest:pitest-maven:mutationCoverage -DmutationThreshold=85
+    - name: Sign
+      run: |
+        echo "on a tag -> set pom.xml <version> to ${GITHUB_REF##*/}"
+        mkdir -p ~/.gnupg/
+        printf "$GPG_SIGNING_KEY" | base64 --decode > ~/.gnupg/private.key
+        gpg --import ~/.gnupg/private.key
+        mvn -B org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=${GITHUB_REF##*/}
+        mvn -B -Psign install
