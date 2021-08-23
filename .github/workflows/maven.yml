@@ -29,13 +29,8 @@ jobs:
         gpg --import ~/.gnupg/private.key
         mvn -B org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=${GITHUB_REF##*/}
         mvn -B -Psign package
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     - name: mutationCovarage with Maven
       run: mvn -B org.pitest:pitest-maven:mutationCoverage -DmutationThreshold=85
-    - name: Sign
-      run: |
-        echo "on a tag -> set pom.xml <version> to ${GITHUB_REF##*/}"
-        mkdir -p ~/.gnupg/
-        printf "$GPG_SIGNING_KEY" | base64 --decode > ~/.gnupg/private.key
-        gpg --import ~/.gnupg/private.key
-        mvn -B org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=${GITHUB_REF##*/}
-        mvn -B -Psign install
