@@ -55,6 +55,9 @@
         <pitest-maven.version>1.6.9</pitest-maven.version>
         <json-path.version>2.6.0</json-path.version>
         <json.version>20210307</json.version>
+
+        <sonar.organization>robert2411</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
