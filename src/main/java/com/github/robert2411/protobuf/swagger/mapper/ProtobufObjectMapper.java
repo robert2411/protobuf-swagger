@@ -65,8 +65,8 @@ public class ProtobufObjectMapper {
      * @param clazz  the class to what it has to be mapped
      * @return A mapped object
      */
-    public <T> T map(Object object, Class<T> clazz) throws IOException {
-        return map(object, clazz, Collections.emptyList());
+    public <T> T map(Object object, Class<T> clazz) {
+            return map(object, clazz, Collections.emptyList());
     }
 
     /**
@@ -77,37 +77,37 @@ public class ProtobufObjectMapper {
      * @param mappingCustomizers customizers that should be applied on the mapping
      * @return A mapped object
      */
-    public <T> T map(Object object, Class<T> clazz, List<MappingCustomizer> mappingCustomizers) throws IOException {
+    public <T> T map(Object object, Class<T> clazz, List<MappingCustomizer> mappingCustomizers){
         String json = objectToJson(object);
         json = applyCustomizers(json, mappingCustomizers);
         return jsonToObject(json, clazz);
     }
 
-    public <T extends Message> T map(Object swagger, Supplier<T.Builder> protobufBuilder) throws JsonProcessingException, InvalidProtocolBufferException {
+    public <T extends Message> T map(Object swagger, Supplier<T.Builder> protobufBuilder) {
         return map(swagger, protobufBuilder, Collections.emptyList());
     }
 
-    public <T extends Message> T map(Object swagger, Supplier<T.Builder> protobufBuilder, List<MappingCustomizer> mappingCustomizers) throws JsonProcessingException, InvalidProtocolBufferException {
+    public <T extends Message> T map(Object swagger, Supplier<T.Builder> protobufBuilder, List<MappingCustomizer> mappingCustomizers) {
         String json = objectToJson(swagger);
         json = applyCustomizers(json, mappingCustomizers);
         return jsonToProto(json, protobufBuilder);
     }
 
-    public <P extends Message, T extends Message> T map(P protobuf, Supplier<T.Builder> protobufBuilder) throws IOException {
+    public <P extends Message, T extends Message> T map(P protobuf, Supplier<T.Builder> protobufBuilder) {
         return map(protobuf, protobufBuilder, Collections.emptyList());
     }
 
-    public <P extends Message, T extends Message> T map(P protobuf, Supplier<T.Builder> protobufBuilder, List<MappingCustomizer> mappingCustomizers) throws IOException {
+    public <P extends Message, T extends Message> T map(P protobuf, Supplier<T.Builder> protobufBuilder, List<MappingCustomizer> mappingCustomizers) {
         String json = protoToJson(protobuf);
         json = applyCustomizers(json, mappingCustomizers);
         return jsonToProto(json, protobufBuilder);
     }
 
-    public <P extends Message, T> T map(P protobuf, Class<T> clazz) throws IOException {
+    public <P extends Message, T> T map(P protobuf, Class<T> clazz) {
         return map(protobuf, clazz, Collections.emptyList());
     }
 
-    public <P extends Message, T> T map(P protobuf, Class<T> clazz, List<MappingCustomizer> mappingCustomizers) throws IOException {
+    public <P extends Message, T> T map(P protobuf, Class<T> clazz, List<MappingCustomizer> mappingCustomizers) {
         String json = protoToJson(protobuf);
         json = applyCustomizers(json, mappingCustomizers);
         return jsonToObject(json, clazz);
@@ -123,21 +123,37 @@ public class ProtobufObjectMapper {
 
 
     @SuppressWarnings("unchecked")
-    public <T extends Message> T jsonToProto(String json, Supplier<T.Builder> protobufBuilder) throws InvalidProtocolBufferException {
+    public <T extends Message> T jsonToProto(String json, Supplier<T.Builder> protobufBuilder)  {
+        try {
         T.Builder builder = protobufBuilder.get();
         parser.merge(json, builder);
         return (T) builder.build();
+        }catch (InvalidProtocolBufferException e){
+            throw new MappingException(e);
+        }
     }
 
-    public String objectToJson(Object object) throws JsonProcessingException {
+    public String objectToJson(Object object)  {
+        try {
         return objectMapper.writeValueAsString(object);
+        }catch (JsonProcessingException e){
+            throw new MappingException(e);
+        }
     }
 
-    public <P extends Message> String protoToJson(P protobuf) throws InvalidProtocolBufferException {
+    public <P extends Message> String protoToJson(P protobuf)  {
+        try {
         return printer.print(protobuf);
+    }catch (InvalidProtocolBufferException e){
+        throw new MappingException(e);
+    }
     }
 
-    public <T> T jsonToObject(String json, Class<T> clazz) throws IOException {
+    public <T> T jsonToObject(String json, Class<T> clazz)  {
+        try {
         return objectMapper.readValue(json, clazz);
+    }catch (IOException e){
+        throw new MappingException(e);
+        }
     }
 }
