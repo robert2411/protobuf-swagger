@@ -12,15 +12,17 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 
 public class JsonPathCustomizerTest {
     private static final String JSON =
-            "{\n" +
-                    "  \"greeting\": \"hello\",\n" +
-                    "  \"test\": [\"world\"]\n" +
-                    "}";
+            """
+                    {
+                      "greeting": "hello",
+                      "test": ["world"]
+                    }
+                    """;
 
 
     @Test
-    public void writeValueToJson() throws IOException {
-        JsonPathCustomizer<String, List<String>> mapper = new JsonPathCustomizer<String, List<String>>("$", "testkey", "", s -> Collections.singletonList(s));
+    public void writeValueToJson() {
+        JsonPathCustomizer<String, List<String>> mapper = new JsonPathCustomizer<String, List<String>>("$", "testkey", "", Collections::singletonList);
         String json = mapper.putValueInJson(JSON, "$", "testkey", Collections.singletonList("bla"));
 
         assertThatJson(json)
@@ -28,7 +30,7 @@ public class JsonPathCustomizerTest {
     }
 
     @Test
-    public void readAndPut() throws IOException {
+    public void readAndPut() {
         JsonPathCustomizer<List<String>, List<String>> mapper = new JsonPathCustomizer<List<String>, List<String>>("$.test", "$", "testkey", i -> i);
         String json = mapper.apply(JSON);
 
@@ -37,7 +39,7 @@ public class JsonPathCustomizerTest {
     }
 
     @Test
-    public void readFieldFromJson() throws IOException {
+    public void readFieldFromJson() {
         JsonPathCustomizer<List<String>, List<String>> mapper = new JsonPathCustomizer<List<String>, List<String>>("$.test", "$", "testkey", i -> i);
 
         List<String> object = mapper.readFieldFromJson(JSON, "$.test.[*]");
