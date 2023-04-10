@@ -7,7 +7,7 @@ package com.github.robert2411.protobuf.swagger.mapper;
 public interface MappingCustomizer {
 
     /**
-     * Customize a mapping on the json and return the resulting json as a string
+     * Customize a mapping on the json and return the resulting json as a string.
      *
      * @param json the json in string format
      * @return The json with the applied mapping

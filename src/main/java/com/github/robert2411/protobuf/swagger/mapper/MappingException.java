@@ -1,6 +1,6 @@
 package com.github.robert2411.protobuf.swagger.mapper;
 
-public class MappingException extends RuntimeException{
+public class MappingException extends RuntimeException {
      public MappingException(String message) {
         super(message);
     }
