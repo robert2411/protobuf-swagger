@@ -22,7 +22,7 @@ public class ProtobufObjectMapperTest {
     private ProtobufObjectMapper mapper = new ProtobufObjectMapper();
 
     @Test
-    public void objectToProto() throws InvalidProtocolBufferException, JsonProcessingException {
+    public void objectToProto() {
         TestObject testObject = new TestObject();
         testObject.setGreeting("Hello world");
         testObject.setTest(new ArrayList<>());
@@ -36,7 +36,7 @@ public class ProtobufObjectMapperTest {
     }
 
     @Test
-    public void objectToObject() throws IOException {
+    public void objectToObject() {
         TestObject testObject = new TestObject();
         testObject.setGreeting("Hello world");
         testObject.setTest(new ArrayList<>());
@@ -64,7 +64,7 @@ public class ProtobufObjectMapperTest {
     }
 
     @Test
-    public void protoToProtobuf() throws IOException {
+    public void protoToProtobuf() {
         ProtobufTest.Greeting greeting = ProtobufTest.Greeting.newBuilder()
                 .setGreeting("Hello world")
                 .addTest("hello")
@@ -91,7 +91,7 @@ public class ProtobufObjectMapperTest {
     }
 
     @Test
-    public void jsonToProtoTest() throws InvalidProtocolBufferException, JsonProcessingException {
+    public void jsonToProtoTest() {
         ProtobufTest.Greeting proto = mapper.jsonToProto(JSON, ProtobufTest.Greeting::newBuilder);
 
         Assert.assertEquals("hello", proto.getGreeting());
@@ -100,7 +100,7 @@ public class ProtobufObjectMapperTest {
     }
 
     @Test
-    public void jsonToObjectTest() throws IOException {
+    public void jsonToObjectTest() {
         TestObject object = mapper.jsonToObject(JSON, TestObject.class);
 
         Assert.assertEquals("hello", object.getGreeting());
@@ -108,12 +108,8 @@ public class ProtobufObjectMapperTest {
         Assert.assertEquals("world", object.getTest().get(0));
     }
 
-
-
-
-
     @Test
-    public void objectToJsonTest() throws JsonProcessingException {
+    public void objectToJsonTest() {
         TestObject testObject = new TestObject();
         testObject.setGreeting("hello");
         testObject.setTest(Collections.singletonList("world"));
